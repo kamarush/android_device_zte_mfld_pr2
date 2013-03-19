@@ -12,7 +12,7 @@ PRODUCT_AAPT_PREF_CONFIG := hdpi
 
 # Files needed for boot image
 PRODUCT_COPY_FILES += \
-    $(DEVICE_FOLDER)/ramdisk/iinit.zte.factory.rc:root/init.zte.factory.rc \
+    $(DEVICE_FOLDER)/ramdisk/init.zte.factory.rc:root/init.zte.factory.rc \
     $(DEVICE_FOLDER)/ramdisk/init.mfld_pr2.rc:root/init.mfld_pr2.rc \
 	$(DEVICE_FOLDER)/ramdisk/init.factory.mfld_pr2.rc:root/init.factory.mfld_pr2.rc \
     $(DEVICE_FOLDER)/ramdisk/init.sdcard.rc:root/init.sdcard.rc \
