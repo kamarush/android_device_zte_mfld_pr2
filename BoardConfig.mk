@@ -23,7 +23,7 @@ BOARD_USES_ALSA_AUDIO := true
 BUILD_WITH_ALSA_UTILS := true
 
 # Graphics
-BOARD_EGL_CFG := device/zte/gxi/prebuilt/egl.cfg
+BOARD_EGL_CFG := device/zte/mfld_pr2/prebuilt/egl.cfg
 
 # Wi-Fi
 
@@ -40,17 +40,17 @@ WIFI_DRIVER_FW_PATH_AP := "/vendor/firmware/fw_bcmdhd_apsta.bin"
 
 
 # Use boot tools to make Intel-formatted images
-DEVICE_BASE_BOOT_IMAGE := device/zte/gxi/blobs/boot.image
-DEVICE_BASE_RECOVERY_IMAGE := device/zte/gxi/blobs/recovery.image
-BOARD_CUSTOM_BOOTIMG_MK := device/zte/gxi/pack-repack_tool/boot.mk
+DEVICE_BASE_BOOT_IMAGE := device/zte/mfld_pr2/blobs/boot.image
+DEVICE_BASE_RECOVERY_IMAGE := device/zte/mfld_pr2/blobs/recovery.image
+BOARD_CUSTOM_BOOTIMG_MK := device/zte/mfld_pr2/pack-repack_tool/boot.mk
 
 # Recovery configuration
 TARGET_RECOVERY_PIXEL_FORMAT := "BGRA_8888"
-BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/zte/gxi/recovery_keys.c
+BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/zte/mfld_pr2/recovery_keys.c
 BOARD_HAS_NO_SELECT_BUTTON := true
 
 # This is deprecated and will be dropped
-TARGET_PREBUILT_KERNEL := device/zte/gxi/blobs/kernel
+TARGET_PREBUILT_KERNEL := device/zte/mfld_pr2/blobs/kernel
 
 BOARD_HAS_LARGE_FILESYSTEM := true
 TARGET_USERIMAGES_USE_EXT4 := true

@@ -1,4 +1,4 @@
-DEVICE_FOLDER := device/zte/gxi
+DEVICE_FOLDER := device/zte/mfld_pr2
 
 ## (2) Also get non-open-source specific aspects if available
 $(call inherit-product-if-exists, vendor/zte/mfld_pr2/mfld_pr2-vendor.mk)

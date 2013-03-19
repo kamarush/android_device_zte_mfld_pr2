@@ -27,7 +27,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 #$(call inherit-product, device/sample/products/backup_overlay.mk)
 
 # Inherit from device
-$(call inherit-product, device/zte/gxi/mfld_pr2.mk)
+$(call inherit-product, device/zte/mfld_pr2/mfld_pr2.mk)
 
 # Set those variables here to overwrite the inherited values.
 PRODUCT_NAME := full_mfld_pr2

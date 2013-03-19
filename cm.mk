@@ -12,9 +12,9 @@ $(call inherit-product, vendor/cm/config/common_full_phone.mk)
 $(call inherit-product, vendor/cm/config/nfc_enhanced.mk)
 
 # Inherit device configuration
-$(call inherit-product, device/zte/gxi/full_gxi.mk)
+$(call inherit-product, device/zte/mfld_pr2/full_gxi.mk)
 
-DEVICE_PACKAGE_OVERLAYS += device/zte/gxi/overlay
+DEVICE_PACKAGE_OVERLAYS += device/zte/mfld_pr2/overlay
 
 #
 # Setup device specific product configuration.
