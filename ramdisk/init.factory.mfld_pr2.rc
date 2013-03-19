@@ -1,0 +1,520 @@
+on early-init
+    mkdir /mnt/sdcard-ext 0000 system system
+    symlink /mnt/sdcard-ext /sdcard-ext
+
+on init
+    export PATH /system/sbin:/system/bin:/system/xbin:/sbin:/vendor/bin
+    write /sys/class/graphics/fbcon/cursor_blink 0
+    mkdir /data/system/ 0770 system system
+    mkdir /data/misc/bluetoothd 0770 bluetooth bluetooth
+    mkdir /data/misc/hcid 0770 bluetooth bluetooth
+
+    chown system system /sys/class/rfkill/rfkill0/state
+    chmod 0660 /sys/class/rfkill/rfkill0/state
+    insmod /lib/modules/sdio.ko
+    insmod /lib/modules/st_drv.ko
+    #insmod /lib/modules/btwilink.ko
+    chown root radio /dev/ttyGTM*
+    chmod 0660 /dev/ttyGTM*
+    setprop gsm.firmware.upload ok
+
+    setprop alsa.mixer.defaultCard medfieldaudio
+    setprop alsa.mixer.defaultGain 1.0
+
+    # Loading camera, sensor modules
+    insmod /lib/modules/videobuf-core.ko
+    insmod /lib/modules/videobuf-dma-contig.ko
+    insmod /lib/modules/videobuf-vmalloc.ko
+    insmod /lib/modules/mt9e013.ko
+    # insmod /lib/modules/mt9m114.ko
+    insmod /lib/modules/ov7692.ko
+    # insmod /lib/modules/lm3554.ko
+    insmod /lib/modules/zi2848.ko
+    insmod /lib/modules/atomisp.ko
+    # Setup video nodes
+    chmod 0777 /dev/video0
+    chmod 0777 /dev/video1
+    chmod 0777 /dev/video2
+
+    # See vendor/intel/common/init.mfld.usb.rc
+    #write /sys/class/android_usb/android0/enable 0
+    #write /sys/class/android_usb/android0/functions adb
+    #write /sys/class/android_usb/android0/iManufacturer "HTC"
+    #write /sys/class/android_usb/android0/iProduct "Android-Phone"
+    #write /sys/class/android_usb/android0/iSerial "Medfield12345678"
+    #write /sys/class/android_usb/android0/idProduct 0x0c01
+    #write /sys/class/android_usb/android0/idVendor 0x0bb4
+    #write /sys/class/android_usb/android0/enable 1
+
+#  Permissions for STMD Repository
+    chmod 0664 /sys/module/hsi_ffl_tty/parameters/hangup_reasons
+    chmod 0664 /sys/module/hsi_ffl_tty/parameters/reset_modem
+    chmod 0664 /sys/module/hsi_ffl_tty/parameters/cold_reset_modem
+    chmod 0664 /sys/module/intel_mid/parameters/force_cold_boot
+    chmod 0664 /sys/devices/pci0000:00/0000:00:05.1/power/control
+    chown system system /sys/module/hsi_ffl_tty/parameters/hangup_reasons
+    chown system system /sys/module/hsi_ffl_tty/parameters/reset_modem
+    chown system system /sys/module/hsi_ffl_tty/parameters/cold_reset_modem
+    chown system system /sys/module/intel_mid/parameters/force_cold_boot
+    chown system system /sys/devices/pci0000:00/0000:00:05.1/power/control
+
+    mkdir /factory 0770 system system
+    mount ext4 /dev/block/mmcblk0p1 /factory
+    mkdir /factory/wifi
+    chown system wifi /factory/wifi
+    chmod 0770 /factory/wifi
+
+    chown system system /dev/watchdog
+    chmod 0660 /dev/watchdog
+
+on property:ro.board.id=nh1
+    symlink /system/etc/MID_thermal.conf /data/misc/thermal/MID_thermal.conf
+
+on property:ro.board.id=pr3
+    symlink /system/etc/MID_thermal_pr3.conf /data/misc/thermal/MID_thermal.conf
+
+on property:sys.boot_completed=1
+    insmod /lib/modules/ipv6.ko
+    setprop ril.coredumpwarning.enable 1
+
+    # Insert matrix for PnP measurements
+    insmod /lib/modules/matrix.ko
+    chmod 0640 /dev/matrix
+
+on boot
+    chown root bluetooth /dev/rfkill
+    chmod 0660 /dev/rfkill
+    chown bluetooth bluetooth /system/bin/uim
+    chown system system /sys/class/rfkill/rfkill0/state
+    chmod 0770 /dev/audience_es305
+    chown audio audio /dev/audience_es305
+    chmod 0777 /system/etc/vpimg.bin
+    chown media media /dev/intel_sst_ctrl
+    chmod 0660 /sys/class/rfkill/rfkill0/state
+
+#  Permissions for Thermal Management
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    chown system system /sys/devices/ipc/msic_battery/charge_enable
+    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    chown system system /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
+    chown system system /sys/module/intel_mid_osip/parameters/force_shutdown_occured
+
+# longchunyan add Broadcom bluetooth sleep & wake 
+     chown bluetooth bluetooth /proc/bluetooth/sleep/proto
+     chmod 0660 /proc/bluetooth/sleep/proto
+# longchunyan add end
+
+#  Permissions for NFC
+    setprop ro.nfc.port "I2C"
+    chmod 0660 /dev/pn544
+    chown nfc nfc /dev/pn544
+    chmod 0755 /system/bin/pcscd
+
+#  Permissions for RapidRIL Repository
+    chmod 0770 /system/etc/rril
+    chown radio radio /system/etc/rril
+
+    chmod 0664 /system/etc/rril/repository.txt
+    chown radio radio /system/etc/rril/repository.txt
+    chmod 0775 sys/devices/pci0000:00/0000:00:02.3/hsm
+
+    chmod 0660 /dev/ttyIFX0
+    chown root radio /dev/ttyIFX0
+
+#  Permissions for Sensors
+    chmod 0777 /dev/taos
+	chown system system /sys/devices/virtual/mhl/siI-833x/rcp_keycode
+	chown system system /sys/devices/virtual/mhl/siI-833x/rcp_ack
+#accel
+    chown system system /sys/class/i2c-dev/i2c-5/device/5-0019/enable
+    chown system system /sys/class/i2c-dev/i2c-5/device/5-0019/range
+    chown system system /sys/class/i2c-dev/i2c-5/device/5-0019/pollrate_ms
+#compass
+    chown system system /sys/class/i2c-dev/i2c-5/device/5-001e/enable
+    chown system system /sys/class/i2c-dev/i2c-5/device/5-001e/range
+    chown system system /sys/class/i2c-dev/i2c-5/device/5-001e/pollrate_ms
+#gyro
+    chown system system /sys/class/i2c-dev/i2c-5/device/5-0068/enable
+    chown system system /sys/class/i2c-dev/i2c-5/device/5-0068/range
+    chown system system /sys/class/i2c-dev/i2c-5/device/5-0068/pollrate_ms
+
+on post-fs-data
+    # we will remap this as /mnt/sdcard with the sdcard fuse tool
+    mkdir /data/media 0775 media_rw media_rw
+    chown media_rw media_rw /data/media
+
+    mkdir /data/misc/firmware 0770 system system
+    mkdir /data/misc/dhcp 0770 dhcp wifi
+    mkdir /data/misc/thermal 0770 system system
+
+    # Create logs folder
+    mkdir /data/logs
+    chown root log /data/logs
+    chmod 0750 /data/logs
+    # Remount the /data/logs
+    #mount /data/logs to emmc0p9
+    mount ext4 /dev/block/mmcblk0p9 /data/logs nosuid nodev barrier=1,data=ordered
+    mkdir /data/logs/modemcrash 0775 system system
+    mkdir /data/logs/stats 0775 system system
+    restart crashlogd
+    setprop persist.service.aplogfs.enable $persist.service.aplogfs.enable
+    setprop persist.service.apklogfs.enable $persist.service.apklogfs.enable
+    setprop persist.service.apklogsd.enable $persist.service.apklogsd.enable
+    setprop persist.service.aplogsd.enable $persist.service.aplogsd.enable
+    setprop persist.service.aplogpti.enable $persist.service.aplogpti.enable
+    setprop persist.service.aklogpti.enable $persist.service.aklogpti.enable
+
+    # Set indication (checked by vold) that we have finished this action
+    setprop vold.post_fs_data_done 1
+
+on charger
+    # Create logs folder
+    mkdir /data/logs
+    chown root log /data/logs
+    chmod 0750 /data/logs
+    # Remount the /data/logs
+    #mount /data/logs to emmc0p9
+    mount ext4 /dev/block/mmcblk0p9 /data/logs nosuid nodev barrier=1,data=ordered
+    mkdir /data/logs/modemcrash 0775 system system
+    mkdir /data/logs/stats 0775 system system
+    restart crashlogd
+    setprop persist.service.aplogfs.enable $persist.service.aplogfs.enable
+    setprop persist.service.apklogfs.enable $persist.service.apklogfs.enable
+    setprop persist.service.apklogsd.enable $persist.service.apklogsd.enable
+    setprop persist.service.aplogsd.enable $persist.service.aplogsd.enable
+    setprop persist.service.aplogpti.enable $persist.service.aplogpti.enable
+    setprop persist.service.aklogpti.enable $persist.service.aklogpti.enable
+
+    class_start charger
+    start console
+    start watchdogd
+
+on post-fs
+    ## CSR GPS setup
+    ## RESET gpio and UART
+    write /sys/class/gpio/export 172
+    write /sys/class/gpio/gpio172/direction high
+    write /sys/class/gpio/gpio172/value 1
+    chmod 0664 /sys/class/gpio/gpio172/value
+    chmod 0660 /dev/ttyMFD2
+    chmod 0664 /sys/devices/pci0000:00/0000:00:05.2/power/control
+    chown system system /dev/ttyMFD2
+    chown system system /sys/class/gpio/gpio172/value
+    chown system system /sys/devices/pci0000:00/0000:00:05.2/power/control
+    mkdir /data/logs/gps
+    chown system system /data/logs/gps
+
+    # Audio timeout to do a DAPM powerdown after a stream is closed(). It is used to eliminate pops between different playback streams.
+    chown media system /sys/devices/ipc/msic_audio/Medfield\ Headset/pmdown_time
+    chown media system /sys/devices/ipc/msic_audio/Medfield\ Speaker/pmdown_time
+    chown media system /sys/devices/ipc/msic_audio/Medfield\ Voice/pmdown_time
+
+    # Volume keys wakeup capability
+    chmod 0664 /sys/devices/platform/gpio-keys/enabled_wakeup
+    chmod 0664 /sys/devices/platform/gpio-keys/disabled_wakeup
+    chown media system /sys/devices/platform/gpio-keys/enabled_wakeup
+    chown media system /sys/devices/platform/gpio-keys/disabled_wakeup
+
+    # Performance tweaks for on-demand governor
+    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 85
+    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 10
+
+#  Permissions for Sensors
+#  ZTE:change 0660 to 0666 for sep_sec_driver
+    chown security security /dev/sep_sec_driver
+    chmod 0666 /dev/sep_sec_driver
+
+# Permissions for LED
+# ZTE: modified by yangchunni for CTS test
+    chown root system /sys/class/leds/intel_keypad_led/brightness
+
+	chown root system /sys/class/timed_output/led_red/enable
+	chown root system /sys/class/timed_output/led_green/enable
+	chown root system /sys/class/timed_output/led_orange/enable
+
+# Permissions for BCU Driver for "K2.6.35" and "K3.0"
+   chown system system /sys/devices/platform/msic_ocd/msic_current/batt_level
+   chown system system /sys/devices/platform/intel_msic/msic_ocd/msic_current/batt_level
+   chown system system /sys/devices/ipc/msic_ocd/msic_current/batt_level
+
+# Permissions for Powertool app
+   chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+   chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+   chown system system /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq
+   chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+   chown system system /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+   chown system system /sys/devices/system/cpu/cpu1/online
+   chown system system /sys/module/intel_soc_pmu/parameters/s0ix
+
+# adding Telephony
+service stmd  /system/bin/stmd
+    class core
+    socket modem-status stream 777 radio radio
+    socket clean-up stream 660 radio system
+    user system
+    group radio cache inet misc system
+    oneshot
+
+# Load Intrinsyc RapidRIL
+#service ril-daemon /system/bin/rild -l /system/lib/librapid-ril-core.so -- -a /dev/gsmtty12 -n /dev/gsmtty2 -m /dev/gsmtty6 -c /dev/gsmtty8 -u /dev/gsmtty1 -o /dev/gsmtty9 -d /dev/gsmtty3 -d /dev/gsmtty4 -d /dev/gsmtty15
+#service ril-daemon /system/bin/rild -l /system/lib/librapid-ril-core.so -- -a /dev/gsmtty12 -n /dev/gsmtty2 -m /dev/gsmtty6 -c /dev/gsmtty8 -u /dev/gsmtty1 -o /dev/gsmtty9 -d /dev/gsmtty3
+#    socket rild stream 660 root radio
+#    socket rild-debug stream 660 radio system
+#    class main
+#    user root
+#    group radio cache inet misc audio
+
+#service ril-daemon /system/bin/logwrapper /system/bin/rild \
+#    -l /system/lib/libxgold-ril.so -- -d /dev/ttyGSM1
+#    socket rild stream 660 root radio
+#    socket rild-debug stream 660 radio system
+#    user root
+#    group system dhcp radio cache inet misc
+#    oneshot
+
+# AT proxy service
+service proxy /system/bin/proxy -d /dev/gsmtty1 -m /dev/gsmtty10
+    socket atproxy-status stream 666 root radio system
+    class main
+    user root
+    group system radio cache inet misc
+    disabled
+
+service proxy-tunneling /system/bin/proxy -d /dev/gsmtty1 -m /dev/gsmtty10 -t on
+    class main
+    user root
+    group system radio cache inet misc
+    disabled
+
+service ad_proxy /system/xbin/ad_proxy
+    class core
+    user root
+    group system cache misc audio
+    disabled
+    oneshot
+
+# MTS: Modem Trace Server (three services)
+service mtsfs /system/bin/mts -t /dev/gsmtty18 -f /mnt/sdcard/data/logs/bplog -n 5 -r 20000
+    disabled
+
+service mtsextfs /system/bin/mts -t /dev/gsmtty18 -f /mnt/sdcard/data/logs/bplog -n 3 -r 200000
+    disabled
+
+service mtssd /system/bin/mts -t /dev/gsmtty18 -f /mnt/sdcard/data/logs/bplog -n 5 -r 20000
+    disabled
+
+service mtsextsd /system/bin/mts -t /dev/gsmtty18 -f /mnt/sdcard/data/logs/bplog -n 3 -r 200000
+    disabled
+
+service mtsusb /system/bin/mts -t /dev/gsmtty18 -p 6700
+    disabled
+
+service mtspti /system/bin/mts -t /dev/gsmtty18 -f /dev/ttyPTI1
+    disabled
+
+service profile_svc_init /system/bin/pytimechart-record start_on_crashlog
+    disabled
+    oneshot
+
+service profile_svc_rest /system/bin/pytimechart-record restart_on_crashlog
+    disabled
+    oneshot
+
+# usbswitch (three services)
+# APE to modem
+service usb_to_modem /system/bin/usbswitch_modem
+    oneshot
+    disabled
+
+# modem to APE
+service usb_to_ape /system/bin/usbswitch_ape
+    oneshot
+    disabled
+
+# usbswitch status
+service usbswitch_status /system/bin/usbswitch_status
+    oneshot
+    disabled
+
+# Toggle ON1
+service toggle_on1 /system/bin/toggle_pin_on1
+    oneshot
+    disabled
+
+# for bluetooth
+
+service bluetoothd /system/bin/bluetoothd -d -n
+    class main
+    socket bluetooth stream 660 bluetooth bluetooth
+    socket dbus_bluetooth stream 660 bluetooth bluetooth
+    # init.rc does not yet support applying capabilities, so run as root and
+    # let hcid drop uid to bluetooth with the right linux capabilities
+    group bluetooth net_bt_admin misc
+    disabled
+    oneshot
+
+service uim /system/bin/uim
+    class core
+    user root
+    group media bluetooth
+    disabled
+    oneshot
+
+service bd_prov /system/bin/bd_prov
+    class core
+    user root
+    oneshot
+
+service dhcpcd_bnep0 /system/bin/logwrapper /system/bin/dhcpcd -ABKL
+    class main
+    group bluetooth wifi system dhcp
+    disabled
+    oneshot
+
+service iprenew_bnep0 /system/bin/logwrapper /system/bin/dhcpcd -n
+    group bluetooth system dhcp
+    disabled
+    oneshot
+
+#longchunyan repair for bluetooth
+#service hciattach /system/bin/brcm_patchram_plus --enable_hci  --enable_lpm --baudrate 921600 --patchram system/etc/wifi/bcm4330.hcd /dev/ttyMFD0 any &
+service hciattach /system/bin/brcm_patchram_plus --enable_hci --no2bytes --scopcm=0,2,0,0,0,0,0,0,0,0 \
+    --baudrate 3000000 --patchram system/etc/wifi/bcm4330.hcd --enable_lpm --tosleep 200000 --use_baudrate_for_download /dev/ttyMFD0
+    class main
+    user root
+# changing user to root from bluetooth is a potential security issue
+# service hciattach_legacy is used instead of hciattach because, we dont
+# have nodes named ttyHS0
+    group bluetooth net_bt_admin misc
+    disabled
+    oneshot
+#longchunyan end   
+
+service hfag /system/bin/sdptool add --channel=10 HFAG
+    class main
+    user bluetooth
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
+service hsag /system/bin/sdptool add --channel=11 HSAG
+    class main
+    user bluetooth
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
+service opush /system/bin/sdptool add --channel=12 OPUSH
+    class main
+    user bluetooth
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
+service pbap /system/bin/sdptool add --channel=19 PBAP
+    class main
+    user bluetooth
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
+service pcsc /system/bin/pcscd --auto-exit
+    class main
+    group system wifi inet
+    disabled
+    oneshot
+
+#/* Emode begin */
+    service cmdproxysvc /system/bin/ztecmdProxy
+    user root
+    disabled
+    oneshot
+
+ service zteprop /system/bin/zprop
+    class main
+    user root
+    oneshot
+ #/* Emode end*/
+
+# create virtual SD card at /mnt/sdcard, based on the /data/media directory
+# daemon will drop to user/group system/media_rw after initializing
+# underlying files in /data/media will be created with user and group media_rw (1023)
+#service sdcard /system/bin/sdcard /data/media 1023 1023
+#    class late_start
+
+# Properties, events trigging service
+
+on property:service.ad_proxy.enable=0
+    stop ad_proxy
+    setprop system.at-proxy.mode $persist.system.at-proxy.mode
+
+on property:service.ad_proxy.enable=1
+    stop proxy
+    stop proxy-tunneling
+    setprop sys.usb.config rndis,acm,adb
+    start ad_proxy
+
+on property:persist.service.profile.enable=1
+    start profile_svc_init
+
+on property:persist.ril-daemon.disable=0
+    start ril-daemon
+
+on property:persist.ril-daemon.disable=1
+    stop ril-daemon
+
+on property:persist.system.at-proxy.mode=*
+setprop system.at-proxy.mode $persist.system.at-proxy.mode
+
+on property:persist.system.at-proxy.mode=0
+    stop proxy
+    stop proxy-tunneling
+#   setprop sys.usb.config $persist.sys.usb.config
+
+on property:persist.system.at-proxy.mode=1
+    stop proxy-tunneling
+#   setprop sys.usb.config com,adb
+    start proxy
+
+on property:persist.system.at-proxy.mode=2
+    stop proxy
+#   setprop sys.usb.config com,adb
+    start proxy-tunneling
+
+on property:persist.service.mtsfs.enable=1
+    start mtsfs
+
+on property:persist.service.mtsfs.enable=0
+    stop mtsfs
+
+on property:persist.service.mtsextfs.enable=1
+    start mtsextfs
+
+on property:persist.service.mtsextfs.enable=0
+    stop mtsextfs
+
+on property:persist.service.mtssd.enable=1
+    start mtssd
+
+on property:persist.service.mtssd.enable=0
+    stop mtssd
+
+on property:persist.service.mtsextsd.enable=1
+    start mtsextsd
+
+on property:persist.service.mtsextsd.enable=0
+    stop mtsextsd
+
+on property:persist.service.mtspti.enable=1
+    write /sys/module/pti/parameters/word_unalignment "1"
+    start mtspti
+
+on property:persist.service.mtspti.enable=0
+    write /sys/module/pti/parameters/word_unalignment "0"
+    stop mtspti
+
+on property:persist.service.usbmodem.enable=1
+    start usb_to_modem
+
+on property:persist.service.usbmodem.enable=0
+    start usb_to_ape

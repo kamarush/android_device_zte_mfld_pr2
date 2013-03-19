@@ -1,0 +1,1 @@
+add_lunch_combo cm_mfld_pr2-userdebug
