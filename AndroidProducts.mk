@@ -15,4 +15,4 @@
 #
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/full_gxi.mk
+    $(LOCAL_DIR)/full_mfld_pr2.mk
