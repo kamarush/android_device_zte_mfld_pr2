@@ -50,13 +50,6 @@ lib/hw/sensors.mfld_pr2.so
 lib/libGLESv1_CM.so
 lib/libGLESv2_dbg.so
 lib/libGLESv2.so
-lib/libomx_ipp_aacdec.so
-lib/libomx_ipp_mp3dec.so
-lib/libomx_ipp_aacenc.so
-lib/libomx_ipp_amrwbenc.so
-lib/libomx_ipp_amrnbenc.so
-lib/libomx_ipp_amrwbdec.so
-lib/libomx_ipp_amrnbdec.so
 lib/libOMXVideoEncoderAVC.so
 lib/libOMXVideoDecoderMPEG4.so
 lib/libOMXVideoDecoderAVCSecure.so
