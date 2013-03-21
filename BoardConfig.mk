@@ -11,6 +11,7 @@ TARGET_ARCH := x86
 TARGET_ARCH_VARIANT := x86-atom
 TARGET_BOARD_PLATFORM := atom
 TARGET_CPU_SMP := true
+CUSTOM_BOARD := mfld_pr2
 
 # Blutetooth
 BOARD_HAVE_BLUETOOTH=true
@@ -21,9 +22,11 @@ BOARD_HAVE_NFC := true
 # Audio
 BOARD_USES_ALSA_AUDIO := true
 BUILD_WITH_ALSA_UTILS := true
+INTEL_AMC := true
 
 # Graphics
 BOARD_EGL_CFG := device/zte/mfld_pr2/prebuilt/egl.cfg
+INTEL_HWC := true
 
 # Wi-Fi
 
